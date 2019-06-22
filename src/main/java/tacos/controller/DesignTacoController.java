@@ -30,6 +30,10 @@ public class DesignTacoController {
         this.ingredientRepo = ingredientRepo;
     }
 
+    /**
+     * The method allows to use name "taco" in html file
+     * @return taco
+     */
     @ModelAttribute(name = "taco")
     public Taco taco() {
         return new Taco();
@@ -37,6 +41,7 @@ public class DesignTacoController {
 
     @GetMapping
     public String showDesignForm(Model model) {
+        //region if you don't have DB...
 //        List<Ingredient> ingredients = Arrays.asList(
 //                new Ingredient("FLTO", "Flour Tortilla", Type.WRAP),
 //                new Ingredient("COTO", "Corn Tortilla", Type.WRAP),
@@ -49,6 +54,9 @@ public class DesignTacoController {
 //                new Ingredient("SLSA", "Salsa", Type.SAUCE),
 //                new Ingredient("SRCR", "Sour Cream", Type.SAUCE)
 //        );
+        //endregion
+
+        // when you added DB...
         List<Ingredient> ingredients = new ArrayList<>();
         ingredientRepo.findAll().forEach(i -> ingredients.add(i));
 
@@ -57,7 +65,6 @@ public class DesignTacoController {
             model.addAttribute(type.toString().toLowerCase(),
                     filterByType(ingredients, type));
         }
-
         return "design";
     }
 
@@ -66,12 +73,9 @@ public class DesignTacoController {
         if (errors.hasErrors()) {
             return "design";
         }
-
         log.info("Processing design: " + design);
-
         return "redirect:/orders/current";
     }
-
 
     private List<Ingredient> filterByType(List<Ingredient> ingredients, Type type) {
         return ingredients.stream()
